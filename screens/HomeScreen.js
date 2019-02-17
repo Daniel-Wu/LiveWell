@@ -10,7 +10,8 @@ import {
   Button,
   TextInput
 } from 'react-native';
-import { WebBrowser, MapView, Marker } from 'expo';
+import { WebBrowser, MapView } from 'expo';
+import { Marker } from 'react-native-maps';
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from 'react-navigation';
 
 
@@ -39,8 +40,9 @@ class HomeScreen extends React.Component {
           </View>
 
         <Button
-          title="Go to Maps"
+          title="Look Around"
           onPress={() => this.props.navigation.navigate('Maps')}
+          style={{fontSize:30}}
         />
       </View>
     );
@@ -64,7 +66,14 @@ class MapsScreen extends React.Component {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
+          >
+        <Marker
+          key={1}
+          coordinate={{latitude: 15.3694, longitude: 44.1910}}
+          title={"Some Title"}
+          description={"Hello world"}
         />
+        </MapView>
 
         <TouchableOpacity onPress={() => alert()} style={styles.fab}>
           <Text style = {styles.fabIcon}>+</Text>
