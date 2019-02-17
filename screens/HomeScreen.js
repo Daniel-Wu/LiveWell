@@ -117,10 +117,10 @@ class MapsScreen extends React.Component {
         <MapView
         style={{ flex: 1 }}
           initialRegion={{
-            latitude: 15.3694,
-            longitude: 44.1910,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+            latitude: 11.742592, 
+            longitude: 42.63183,
+            latitudeDelta: 0.03,
+            longitudeDelta: 0.02,
           }}
         onPress= {(e) => {
           let coordinate = e.nativeEvent.coordinate
