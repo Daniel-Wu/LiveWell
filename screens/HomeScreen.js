@@ -7,10 +7,10 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Button
+  Button,
+  TextInput
 } from 'react-native';
 import { WebBrowser, MapView, Marker } from 'expo';
-import {TextInput} from 'react-native';
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from 'react-navigation';
 
 
@@ -37,7 +37,7 @@ class HomeScreen extends React.Component {
               style={styles.welcomeImage}
             />
           </View>
-          
+
         <Button
           title="Go to Maps"
           onPress={() => this.props.navigation.navigate('Maps')}
@@ -54,15 +54,23 @@ class MapsScreen extends React.Component {
   render() {
     return (
 
-      <MapView
-      style={{ flex: 1 }}
-        initialRegion={{
-          latitude: 15.3694,
-          longitude: 44.1910,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-      />
+      <View style={{flex: 1}}>
+
+        <MapView
+        style={{ flex: 1 }}
+          initialRegion={{
+            latitude: 15.3694,
+            longitude: 44.1910,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        />
+
+        <TouchableOpacity onPress={() => alert()} style={styles.fab}>
+          <Text style = {styles.fabIcon}>+</Text>
+        </TouchableOpacity>
+
+      </View>
 
     );
   }
@@ -194,134 +202,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#2e78b7',
   },
-});
-
-/**
-const RootStack = createStackNavigator(
-  {
-    Home: {
-      screen: HomeScreen,
-    },
-    Maps: {
-      screen: MapsScreen,
-    },
+  fab: {
+    position: 'absolute',
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 20,
+    bottom: 20,
+    backgroundColor: '#03A9F4',
+    borderRadius: 30,
+    elevation: 8
   },
-  {
-    initialRouteName: 'Home',
+  fabIcon: {
+    fontSize: 30,
+    color: 'white'
   }
-);
-
-
-
-const AppContainer = createAppContainer(RootStack);
-
-
-export default class App extends React.Component {
-  render() {
-    return <AppContainer />;
-  }
-}
-
-/**
-
-export default class HomeScreen extends React.Component {
-  static navigationOptions = {
-    header: null,
-  };
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-            <Image
-              source={
-                __DEV__
-                  ? require('../assets/images/robot-dev.png')
-                  : require('../assets/images/robot-prod.png')
-              }
-              style={styles.welcomeImage}
-            />
-          </View>
-
-          <View style={styles.getStartedContainer}>
-            {this._maybeRenderDevelopmentModeWarning()}
-
-            <Text style={styles.getStartedText}>Get started by opening</Text>
-
-            <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              I changed text.
-              Hi ben choi.
-            </Text>
-          </View>
-
-          <Button
-            //onPress={onPressLearnMore}
-            title="Learn More"
-            color="#841584"
-            accessibilityLabel="Learn more about this purple button"
-          />
-
-        </ScrollView>
-
-        <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-          <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
-          </View>
-        </View>
-      </View>
-
-      <AppContainer />
-
-
-
-    );
-  }
-
-
-
-  _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
-        </Text>
-      );
-
-      return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
-    }
-  }
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/development-mode');
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
-    );
-  };
-}
-
-
-
-
-
-*/
+});
