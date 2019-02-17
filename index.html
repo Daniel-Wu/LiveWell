@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-firestore.js"></script>
+
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyBTKIet6yPKfP12TwnCkyVXBiHhP5hagrA",
+        authDomain: "livewell-treehacks.firebaseapp.com",
+        databaseURL: "https://livewell-treehacks.firebaseio.com",
+        projectId: "livewell-treehacks",
+        storageBucket: "livewell-treehacks.appspot.com",
+        messagingSenderId: "595091963289"
+      };
+      firebase.initializeApp(config);
+    </script>
+    <style type="text/css">
+      #map {
+        height: 100%;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAmfkIIqhRbdrTy2LBGbBVvfMpeDdTgi0
+        &libraries=visualization&callback=initMap">
+    </script>
+
+    <script src = "./firebasemap.js"></script>
+
+  </body>
+</html>
