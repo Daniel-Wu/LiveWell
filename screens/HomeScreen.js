@@ -76,6 +76,7 @@ class MapsScreen extends React.Component {
         key:0,
         latitude: 0, 
         longitude: 0,
+        quality: 0,
         title:"Selection",
         description:""},
     }
@@ -94,8 +95,9 @@ class MapsScreen extends React.Component {
            key:doc.id,
            latitude: data.lat, 
            longitude: data.lng,
-           title:"Some Title",
-           description:"Hello world"
+           title:data.quality.toString(),
+           quality: data.quality,
+           description:""
          }
          results.push(new_marker)
 
@@ -109,6 +111,20 @@ class MapsScreen extends React.Component {
      this.state.markers.push(marker)
   }
 
+  _getIconString(rating) {
+   if (rating == 1) {
+     return require('../assets/images/LiveWell_MapIcons_1.png');
+   } else if (rating == 2) {
+     return require('../assets/images/LiveWell_MapIcons_2.png');
+   } else if (rating == 3) {
+     return require('../assets/images/LiveWell_MapIcons_3.png');
+   } else if (rating == 4) {
+     return require('../assets/images/LiveWell_MapIcons_4.png');
+   } else if (rating == 5) {
+     return require('../assets/images/LiveWell_MapIcons_5.png');
+   }
+ }
+
   render() {
     return (
 
@@ -117,10 +133,10 @@ class MapsScreen extends React.Component {
         <MapView
         style={{ flex: 1 }}
           initialRegion={{
-            latitude: 11.742592, 
-            longitude: 42.63183,
-            latitudeDelta: 0.03,
-            longitudeDelta: 0.02,
+            latitude: 11.722592, 
+            longitude: 42.72183,
+            latitudeDelta: 0.12,
+            longitudeDelta: 0.1,
           }}
         onPress= {(e) => {
           let coordinate = e.nativeEvent.coordinate
@@ -137,6 +153,7 @@ class MapsScreen extends React.Component {
                 longitude: marker.longitude
               }}
               title={marker.title}
+              image={this._getIconString(marker.quality)}
               description={marker.description}
             />
 
@@ -182,11 +199,14 @@ class ReportScreen extends React.Component {
     this.state = {
       text: "Type here", 
       db:firebase.firestore(),
+      score: 0,
+      counter: 0,
+      questions: ["Concrete lining inside well?", "Can the well head be sealed?", 
+      "Is a self-priming hand pump installed?", "Is there a well apron around the perimeter?", "Is the area kept separate from stagnant water and livestock?"],
+      question: "Concrete lining inside well?"
     }
 
   }
-
-
 
   // /**
   //  * Adds a click to firebase.
@@ -200,11 +220,28 @@ class ReportScreen extends React.Component {
     });
   }
 
+  _submitReport(){
+    if(this.state.score >5){
+      this.state.score = 5;
+    }
+
+    if(this.state.score <= 0){
+      this.state.score = 1;
+    }
+    var data = {
+      lat: this.props.navigation.getParam('lat', 0),
+      lng: this.props.navigation.getParam('lng', 0),
+      quality: this.state.score,
+    };
+    this.addToFirebase(data)
+    this.props.navigation.navigate('Maps')
+  }
+
 
   render() {
     return (
       <View style={{ flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
-        <Text style={styles.headerText}>What's wrong?</Text>
+        <Text style={styles.headerText}>Well Status</Text>
 
         <View style={styles.welcomeContainer}>
           <Image
@@ -218,27 +255,57 @@ class ReportScreen extends React.Component {
         </View>
 
         <View
-          style={{flex:1, marginLeft: 20, marginRight: 20, alignItems: 'stretch', justifyContent: 'center'}}
+          style={{flex:1, marginLeft: 20, marginRight: 20, justifyContent: 'center', alignItems:'center'}}
           >
-        <TextInput
-          style={{height: 100, fontSize: 30, color: 'grey', flex: 1}}
-          onChangeText={(text) => this.setState({text})}
-          value={this.state.text}
-        />
+        <Text style={{fontSize:24, justifyContent:'center', fontFamily: 'sans-serif'}}>{this.state.question}</Text>
+        </View>
 
-        <Button
-          title="Submit Report"
+        <View
+          style={{flex:1, marginLeft: 20, marginRight: 20, justifyContent: 'center', paddingVertical: 100, paddingHorizontal: 100}}
+          >
+
+        <View style={{flex:2, flexDirection: 'row', justifyContent:'space-between'}}>
+          <Button
+          title="     Yes     "
+          color="#1bd31b"
           onPress={() => {
-            var data = {
-              lat: this.props.navigation.getParam('lat', 0),
-              lng: this.props.navigation.getParam('lng', 0),
-              quality: 1,
-            };
-            this.addToFirebase(data)
-            this.props.navigation.navigate('Maps')
+            this.state.score += 1
+            this.state.counter += 1
+            if(this.state.counter >= 5){
+              this._submitReport();
+            }else{
+              this.setState({'question': this.state.questions[this.state.counter]})
+            }          
           }}
-          style={{fontSize:30, height:30}}
+          style={{
+            flex:1,
+            marginHorizontal:20,
+            marginVertical:20,
+            paddingVertical:10,
+            paddingHorizontal: 50
+          }}
+          />
+
+          <Button 
+          color="tomato"
+          title="     No     "
+          onPress={() => {
+            this.state.counter += 1
+            if(this.state.counter >= 5){
+              this._submitReport();
+            }else{
+              this.setState({'question': this.state.questions[this.state.counter]})
+            }
+          }}
+          style={{
+            flex:1,
+            marginHorizontal:20,
+            marginVertical:20,
+            paddingVertical:10,
+            paddingHorizontal: 50
+          }}
         />
+        </View>
         </View>
 
       </View>
@@ -322,9 +389,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   headerText: {
-    fontSize: 30,
+    fontSize: 40,
     textAlign: 'center',
     marginTop: 10,
+    fontWeight: 'bold',
+    fontFamily: 'sans-serif'
   },
   tabBarInfoContainer: {
     position: 'absolute',
@@ -381,5 +450,11 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: 'white'
   },
+  buttonDesign:{
+    flex:1,
+    marginHorizontal:20,
+    marginVertical:20,
+
+  }
 
 });
