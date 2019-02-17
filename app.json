@@ -24,6 +24,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "LiveWell: Treehacks 2019 Submission\nA platform for monitoring and crowdsourced maintenance of wells in Djibouti.\nBy Daniel Wu, Ben Choi, Nate Muldrow, and Nick Crawford",
+    "githubUrl": "https://github.com/Perplector/LiveWell"
   }
 }
