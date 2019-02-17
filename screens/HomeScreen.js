@@ -10,14 +10,14 @@ import {
   Button,
   TextInput
 } from 'react-native';
-import { WebBrowser, MapView } from 'expo';
+import { WebBrowser, MapView, Constants, Location, Permissions } from 'expo';
 import { Marker } from 'react-native-maps';
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from 'react-navigation';
 
 
 import { MonoText } from '../components/StyledText';
 
-
+//Home 
 class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Home',
@@ -49,10 +49,40 @@ class HomeScreen extends React.Component {
   }
 }
 
+//Screen with mapview
 class MapsScreen extends React.Component {
+
+  constructor(props){
+    super(props)
+    this.state = {location: null, 
+      markers: [
+        {
+          key:1,
+          coordinate:{latitude: 15.3694, longitude: 44.1910},
+          title:"Some Title",
+          description:"Hello world",
+        }
+      ]
+    }
+    //this._getLocationAsync()
+  }
   static navigationOptions = {
     title: 'Maps',
   };
+
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }else{
+      let location = await Location.getCurrentPositionAsync({});
+      this.setState({ location });
+    }
+  };
+
   render() {
     return (
 
@@ -67,16 +97,24 @@ class MapsScreen extends React.Component {
             longitudeDelta: 0.0421,
           }}
           >
-        <Marker
-          key={1}
-          coordinate={{latitude: 15.3694, longitude: 44.1910}}
-          title={"Some Title"}
-          description={"Hello world"}
-        />
+
+
+          {this.state.markers.map(marker => (
+            <Marker
+              key={marker.key}
+              coordinate={marker.coordinate}
+              title={marker.title}
+              description={marker.description}
+            />
+          ))}
+
         </MapView>
 
-        <TouchableOpacity onPress={() => alert()} style={styles.fab}>
-          <Text style = {styles.fabIcon}>+</Text>
+        <TouchableOpacity 
+          style={styles.fab}
+          onPress={() => this.props.navigation.navigate('Report')}
+          >
+            <Text style = {styles.fabIcon}>+</Text>
         </TouchableOpacity>
 
       </View>
@@ -86,7 +124,7 @@ class MapsScreen extends React.Component {
 }
 
 
-
+//Screen for item reporting
 class ReportScreen extends React.Component {
 
   constructor(props){
@@ -101,11 +139,11 @@ class ReportScreen extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Report Screen</Text>
+      <View style={{ flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={styles.headerText}>Report Screen</Text>
 
         <TextInput
-          style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+          style={{height: 100, borderColor: 'gray', borderWidth: 1}}
           onChangeText={(text) => this.setState({text})}
           value={this.state.text}
         />
@@ -115,7 +153,7 @@ class ReportScreen extends React.Component {
   }
 }
 
-
+//Make navigator
 const TabNavigator = createBottomTabNavigator({
   Home: { screen: HomeScreen },
   Maps: { screen: MapsScreen },
@@ -170,6 +208,10 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: 'rgba(96,100,109, 1)',
     lineHeight: 24,
+    textAlign: 'center',
+  },
+  headerText: {
+    fontSize: 30,
     textAlign: 'center',
   },
   tabBarInfoContainer: {
